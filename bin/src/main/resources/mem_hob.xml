@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mem_hobns">
+<!-- Use type aliases to avoid typing the full classname every time. -->
+	<resultMap id="mem_hobnsResult" type="mem_hob">
+		<result property="mm_id" 	 	column="mm_id"/>
+		<result property="hobby_id"		column="hobby_id"/>
+	</resultMap>
+	<insert id="SignUp2" parameterType="mem_hob">
+		insert into mem_hob values( #{mm_id},#{hobby_id} )
+	</insert>
+	
+		<select id="list" parameterType="String" resultMap="mem_hobnsResult">
+		select * from mem_hob where mm_id=#{mm_id}
+	</select>
+	
+	<update id="Update2" parameterType="mem_hob">
+		update mem_hob set hobby_id=#{hobby_id} where mm_id=#{mm_id}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+	delete from mem_hob where mm_id=#{mm_id}
+	</delete>
+</mapper>

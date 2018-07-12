@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberns">
+<!-- Use type aliases to avoid typing the full classname every time. -->
+	<resultMap id="memberResult" type="member">
+		<result property="mm_id" 	 	column="mm_id"/>
+		<result property="password"  	column="password"/>
+		<result property="name" 	 	column="name"/>
+		<result property="del"			column="del"/>
+		<result property="email" 	 	column="email"/>
+	</resultMap>
+	
+	<insert id="SignUp1" parameterType="member">
+		insert into member values(#{mm_id}, #{password}, #{name}, #{del}, #{email})
+	</insert>
+
+	<select id="select" parameterType="string" resultType="member">
+		select * from member where mm_id=#{mm_id}
+	</select>
+	
+	<update id="Update1" parameterType="post">
+		update member set 
+			password=#{password},name=#{name},email=#{email} where mm_id=#{mm_id}
+	</update>
+	
+		<update id="withdraw" parameterType="string">
+		update member set 
+			del='y' where mm_id=#{mm_id}
+	</update>
+	<select id="findId" parameterType="member" resultType="string">
+		select mm_id from member where name=#{name} and email=#{email}
+	</select>
+	<!--
+	<select id="findId" parameterType="member" resultType="member">
+		select * from member where name=#{name} and email=#{email}
+	</select>  -->
+	<update id="update_pw" parameterType="member">
+		update member set password = #{password} where mm_id = #{mm_id}
+	</update>
+</mapper>

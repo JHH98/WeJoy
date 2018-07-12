@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hobbyns">
+	<resultMap id="hobbyResult" type="hobby">
+		<result property="hobby_id" 	column="hobby_id"/>
+		<result property="hobby_name" 	column="hobby_name"/>
+		<result property="img"  		column="img"/>
+	</resultMap>
+	<select id="list" resultMap="hobbyResult">
+		select * from hobby order by hobby_id desc	
+	</select>
+</mapper>

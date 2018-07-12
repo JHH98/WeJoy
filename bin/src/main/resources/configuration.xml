@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="post" type="com.wejoy.go.model.Post"/>
+		<typeAlias alias="member" type="com.wejoy.go.model.Member"/>
+		<typeAlias alias="comments" type="com.wejoy.go.model.Comments"/>
+		<typeAlias alias="hobby" type="com.wejoy.go.model.Hobby"/>
+		<typeAlias alias="mem_hob" type="com.wejoy.go.model.Mem_hob"/>
+		<typeAlias alias="ps_hob" type="com.wejoy.go.model.Ps_hob"/>
+		<typeAlias alias="like_func" type="com.wejoy.go.model.Like_func"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="post.xml"/>
+		<mapper resource="member.xml"/>
+		<mapper resource="comments.xml"/>
+		<mapper resource="hobby.xml"/>
+		<mapper resource="mem_hob.xml"/>
+		<mapper resource="ps_hob.xml"/>
+		<mapper resource="like_func.xml"/>
+	</mappers>
+</configuration>

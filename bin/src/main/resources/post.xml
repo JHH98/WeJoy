@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="postns">
+<resultMap type="post" id="postResultmap">
+<result property="ps_id" column="ps_id"/>
+<result property="content" column="content"/>
+<result property="reg_date" column="reg_date"/>
+<result property="read_count" column="read_count"/>
+<result property="likes" column="likes"/>
+<result property="mm_id" column="mm_id"/>
+<result property="del" column="del"/>
+<result property="origin_ig_name" column="origin_ig_name"/>
+<result property="ip" column="ip"/>
+<result property="ig_size" column="ig_size"/>
+<result property="subject" column="subject"/>
+<result property="hobby_id" column="hobby_id"/>
+
+
+</resultMap>
+<select id="total" parameterType="post" resultType="int">
+		select count(*) from post 
+	<!-- <where>
+			<if test="keyword!=null and keyword!=''">
+				${search} like '%'||#{keyword}||'%'
+			</if>
+		</where>	 -->
+		<where>
+		<choose>
+				<when test="keyword!=null and keyword!='' and hobby_id!=0">
+                    ${search} like '%'||#{keyword}||'%' and hobby_id=#{hobby_id} 
+                </when> 
+				<when test="hobby_id!=0">
+                    hobby_id=#{hobby_id} 
+                </when>
+                <when test="keyword!=null and keyword!='' and hobby_id==0">
+                    ${search} like '%'||#{keyword}||'%'
+                </when> 
+            </choose>
+            and del = 'n'
+            </where>
+            
+	</select>
+	
+	
+		<select id="list" parameterType="post" resultMap="postResultmap">
+		select * from (select a.*, rowNum rn from (
+			select * from post
+		<!--  <where>
+			<if test="keyword!=null and keyword!=''">
+					${search} like '%'||#{keyword}||'%'
+			</if>
+		</where>  -->
+		<where>
+		<choose>    
+				<when test="keyword!=null and keyword!='' and hobby_id!=0">
+                    ${search} like '%'||#{keyword}||'%' and hobby_id=#{hobby_id} 
+                </when> 
+				<when test="hobby_id!=0">
+                    hobby_id=#{hobby_id} 
+                </when>
+                <when test="keyword!=null and keyword!='' and hobby_id==0">
+                    ${search} like '%'||#{keyword}||'%'
+                </when> 
+            </choose>
+            and del='n'
+            </where>
+			order by ps_id DESC) a) 
+				where rn between #{startRow} and #{endRow}  
+	</select>
+	
+	
+	
+	<select id="bestTotal" parameterType="post" resultType="int">
+		select count(*) from post 
+		<where>
+		<choose>
+				<when test="keyword!=null and keyword!='' and hobby_id!=0">
+                    ${search} like '%'||#{keyword}||'%' and hobby_id=#{hobby_id} 
+                </when> 
+				<when test="hobby_id!=0">
+                    hobby_id=#{hobby_id} 
+                </when>
+                <when test="keyword!=null and keyword!='' and hobby_id==0">
+                    ${search} like '%'||#{keyword}||'%'
+                </when> 
+                 <when test="date_line!=0 ">
+                 <choose>
+                 <when test="date_line==1">
+                 reg_date >= TO_CHAR(SYSDATE,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==2">
+                 reg_date >= TO_CHAR(SYSDATE-7,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==3">
+                 reg_date >= TO_CHAR(SYSDATE-30,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==4">
+                 reg_date >= TO_CHAR(SYSDATE-365,'YYYYMMDD')
+                 </when>
+                 </choose>
+                </when>
+            </choose>
+            and del = 'n'
+            </where>
+            order by likes
+	</select>
+	
+	<select id="bestList" parameterType="post" resultMap="postResultmap">
+		select * from (select a.*, rowNum rn from (
+			select * from post
+		<where>
+		<choose>    
+				<when test="keyword!=null and keyword!='' and hobby_id!=0">
+                    ${search} like '%'||#{keyword}||'%' and hobby_id=#{hobby_id} 
+                </when> 
+				<when test="hobby_id!=0">
+                    hobby_id=#{hobby_id} 
+                </when>
+                <when test="keyword!=null and keyword!='' and hobby_id==0">
+                    ${search} like '%'||#{keyword}||'%'
+                </when> 
+                  <when test="date_line!=0 ">
+                 <choose>
+                 <when test="date_line==1">
+                reg_date >= TO_CHAR(SYSDATE,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==2">
+                 reg_date >= TO_CHAR(SYSDATE-7,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==3">
+                 reg_date >= TO_CHAR(SYSDATE-30,'YYYYMMDD')
+                 </when>
+                 <when test="date_line==4">
+                reg_date >= TO_CHAR(SYSDATE-365,'YYYYMMDD')
+                 </when>
+                 </choose>
+                </when>
+            </choose>
+            and del='n'
+            </where>
+			order by likes DESC, ps_id DESC) a) 
+				where rn between #{startRow} and #{endRow} 
+	</select>
+	
+	<select id="select" parameterType="int" resultType="post">
+		select * from post where ps_id=#{ps_id}
+	</select>
+	
+	<select id="maxnum" resultType="int">
+		select nvl(max(ps_id), 0) + 1 ps_id from post
+	</select>
+	
+	<update id="updateReadCount" parameterType="int">
+		update post set read_count = read_count + 1
+			where ps_id=#{ps_id}
+	</update>
+	
+	<insert id="insert" parameterType="post">
+
+		insert into post values (#{ps_id},#{content},sysdate,0,#{likes},#{mm_id},#{del},#{origin_ig_name},#{ip},#{ig_size},#{subject},#{hobby_id})
+	</insert>
+	
+	<update id="update" parameterType="post">
+		update post set 
+			subject=#{subject},content=#{content},origin_ig_name=#{origin_ig_name} where ps_id=#{ps_id}
+	</update>
+	<update id="delete" parameterType="int">
+		update post set del='y' where ps_id=#{ps_id}
+	</update>
+	
+	<select id="getPage" parameterType="String" resultMap="postResultmap">
+		select * from post where mm_id=#{mm_id}
+	</select>
+	
+	<select id="getPage2" parameterType="post" resultMap="postResultmap">
+		select * from (select a.*, rowNum rn from (
+			select * from post			
+			order by ps_id DESC) a) 
+				where mm_id=#{mm_id} and rn between #{startRow} and #{endRow}
+	</select>
+	
+		<update id="likeCount" parameterType="int">
+		update post set likes = likes + 1
+			where ps_id=#{ps_id}
+		</update>
+	
+	</mapper>
